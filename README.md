@@ -1,168 +1,179 @@
 # 🧠 YOLO-Face-Match
+> 以 **YOLOv8-Face** 結合 **InsightFace ArcFace** 打造的影片人臉辨識系統  
+> Author • Aaron-lab-c
 
-> 使用 YOLOv8 與 InsightFace 構建的影片人臉辨識系統
-
-
-\\
+<p align="center">
+  <a href="https://github.com/Aaron-lab-c/YOLO-Face-Match">
+    <img src="https://img.shields.io/github/v/tag/Aaron-lab-c/YOLO-Face-Match?label=version" alt="Version Badge" />
+  </a>
+  <a href="LICENSE">
+    <img src="https://img.shields.io/badge/license-MIT-green" alt="MIT License" />
+  </a>
+  <a href="https://github.com/Aaron-lab-c/YOLO-Face-Match/actions/workflows/ci.yml">
+    <img src="https://img.shields.io/github/actions/workflow/status/Aaron-lab-c/YOLO-Face-Match/ci.yml?label=build" alt="Build Status" />
+  </a>
+  <a href="https://github.com/Aaron-lab-c/YOLO-Face-Match/stargazers">
+    <img src="https://img.shields.io/github/stars/Aaron-lab-c/YOLO-Face-Match?style=social" alt="GitHub Stars" />
+  </a>
+  <a href="https://www.python.org/">
+    <img src="https://img.shields.io/badge/python-3.8%2B-blue" alt="Python 3.8+" />
+  </a>
+</p>
 
 ---
 
 ## ⚡ 專案概述
+YOLO-Face-Match 提供一條龍流程  
+先將已知人臉照片轉換為向量資料庫  
+再於影片中即時比對並標註人臉  
+適用於監控、門禁、影片標記等情境  
 
-本專案提供一套簡潔的流程，可將人臉資料建立為向量資料庫，並對影片中出現的人臉進行即時比對與辨識
-整合 YOLOv8-Face 作為人臉偵測器，搭配 InsightFace (ArcFace) 提取特徵向量
-適用於監控影片、人員出入紀錄、自動標記等場景
+核心組件  
+* **YOLOv8-Face** 偵測器（Hugging Face Model Hub 自動載入）  
+* **InsightFace ArcFace** 特徵向量擷取與比對  
 
 ---
 
 ## ✨ 主要特色
-
-* 使用 Hugging Face 模型庫自動載入 YOLOv8-Face 權重
-* 支援 ArcFace 特徵提取與比對（支援單張照片向量平均）
-* 自動顯示辨識結果並可輸出新影片
-* 命令列操作簡單明瞭
+| 特色 | 說明 |
+| --- | --- |
+| 📦 **零配置權重** | 自動從 Hugging Face 下載 YOLOv8-Face 權重 |
+| 🔍 **精準辨識** | ArcFace 128-D 向量 支援多張平均化 |
+| 🎬 **即時標註** | OpenCV 畫框與標籤 可另存新影片 |
+| 🖥️ **CLI 友善** | face_db.py 建庫 recognizer.py 比對 一行命令完成 |
+| 🧩 **模組化** | 偵測、特徵、比對、視覺化 各自封裝 方便擴充 |
 
 ---
 
 ## 🚀 快速開始
 
-### 📦 安裝方式
-
+### 📦 安裝
 ```bash
-git clone https://github.com/yourname/YOLO-Face-Match.git
+git clone https://github.com/Aaron-lab-c/YOLO-Face-Match.git
 cd YOLO-Face-Match
+pip install -r requirements.txt        # 建議
+# 或手動：
+pip install ultralytics insightface opencv-python huggingface_hub matplotlib
 
-pip install -r requirements.txt
-# 或手動安裝必要套件：
-pip install opencv-python insightface ultralytics face_recognition huggingface_hub matplotlib
-```
+⚡ 基本流程
 
-### ⚡ 基本使用
+1️⃣ 建立人臉向量資料庫
+把人臉照片放入 faces_db/<person_name>/*.jpg
 
-1️⃣ 建立人臉向量資料庫（將人臉照片放入 `faces_db/人名/*.jpg`）：
-
-```bash
 python face_db.py
-```
 
-2️⃣ 辨識影片中人臉並輸出標記後影片：
+2️⃣ 辨識影片並輸出結果
 
-```bash
-python recognizer.py input_video.mp4 output_video.mp4
-```
+python recognizer.py input.mp4 output.mp4
 
----
+預設輸出含框與姓名的 output.mp4 並於螢幕即時顯示
 
-## 📋 功能特色
+⸻
 
-| 功能名稱      | 描述                      |
-| --------- | ----------------------- |
-| 人臉向量提取    | 使用 InsightFace ArcFace  |
-| YOLOv8 偵測 | 取自 Hugging Face YOLO 模型 |
-| 人臉比對      | 使用餘弦相似度進行比對             |
-| 視覺化標記     | 使用 OpenCV 即時顯示與畫框       |
-| 輸出影片      | 可自動輸出辨識結果之新影片           |
+📋 功能一覽
 
----
+功能 描述
+人臉偵測 YOLOv8-Face
+特徵擷取 InsightFace ArcFace
+向量比對 餘弦相似度
+視覺化 OpenCV 實時顯示與寫檔
+影片輸出 ffmpeg-backend 重新編碼 MP4
 
-## 📚 完整文件
 
-請參閱原始碼中註解
+⸻
 
-> TODO：補上 Wiki 連結與參數說明表格
+📚 文件
+ • 原始碼內 Docstring 與註解
+ • Wiki （TODO 詳細參數說明）
 
----
+⸻
 
-## 💻 系統需求
+💻 系統需求
 
-| 項目     | 最低需求                    |
-| ------ | ----------------------- |
-| 作業系統   | Windows / macOS / Linux |
-| Python | 3.8 或以上                 |
-| 記憶體    | 建議至少3GB                 |
-| 顯示卡    | 選用，支援 CPU 運算            |
+項目 最低需求
+OS Windows macOS Linux
+Python 3.8+
+記憶體 ≥ 3 GB
+GPU 非必需 但可加速
 
----
 
-## 🔧 建立與開發
+⸻
 
-### 👢 專案檔案結構
+🔧 開發與建置
 
-```text
-YOLO-Face-Match/
-├── face_db.py           # 建立人臉向量資料庫
-├── recognizer.py        # 影片人臉辨識主程式
-├── faces_db/            # 已知人員照片，子資料夾為人名
+專案結構
+
+YOLO-Face-Match
+├── face_db.py          # 建立向量資料庫
+├── recognizer.py       # 影片辨識主程式
+├── faces_db/           # 已知人臉照片
 │   ├── alice/
 │   └── bob/
-├── face_db.pkl          # 儲存的人臉向量資料庫
-├── input_video.mp4      # 測試用輸入影片
-└── output_video.mp4     # 輸出結果影片
-```
+├── face_db.pkl         # 向量資料庫輸出
+├── tests/              # 單元測試（TODO）
+└── requirements.txt
 
-### 🚰 技術
+主要技術
 
-| 類別    | 使用技術                                |
-| ----- | ----------------------------------- |
-| 偵測模型  | YOLOv8 Face Detection (HuggingFace) |
-| 向量模型  | InsightFace / ArcFace               |
-| 特徵比對  | 餘弦相似度                               |
-| 顯示與輸出 | OpenCV, Matplotlib                  |
-| 語言    | Python 3.8+                         |
+類別 技術
+偵測 YOLOv8-Face (Ultralytics)
+特徵 InsightFace ArcFace
+比對 numpy · cosine similarity
+影像 OpenCV 4.X
+視覺 Matplotlib
+語言 Python 3.8+
 
----
 
-## 📈 品質指標
+⸻
 
-* 單元測試：❌ TODO
-* 自動化部署：❌ TODO
-* 型別檢查：❌ TODO
-* PEP8 相容：✅
+📈 品質指標
+ • PEP 8 相容
+ • 型別註解完整 (mypy clean) TODO
+ • pytest 覆蓋率 > 80 % TODO
+ • GitHub Actions 自動測試與包裝 TODO
 
----
+⸻
 
-## 🤝 貢獻指南
+🤝 貢獻指南
 
-歡迎提問、回報 bug、提交 PR
-請遵守以下規範：
+歡迎 Issue 與 PR
+請先於本地跑 face_db.py recognizer.py 確認無誤
+提交前執行 pre-commit run --all-files（PEP8 與型別檢查）
 
-### 🐛 問題回報
+回報問題
+ 1. 操作步驟
+ 2. 預期結果與實際結果
+ 3. 完整錯誤訊息 截圖或日誌
 
-1. 清楚描述步驟與錯誤訊息
-2. 附上重現步驟與環境資訊
-
----
-
-## 📄 授權
+⸻
 
 📄 授權
-本專案原始碼採用 MIT License
-請注意：本專案引用的第三方模型（如 YOLOv8-Face 與 InsightFace）各自遵循其原始授權條款，使用時請依來源遵守
 
----
+此專案採用 MIT License
+YOLOv8-Face 與 InsightFace 另有各自授權 請依原專案規範使用
 
-## 🙏 致謝
+⸻
 
-* [ultralytics/YOLOv8](https://github.com/ultralytics/ultralytics)
-* [InsightFace](https://github.com/deepinsight/insightface)
-* [face\_recognition](https://github.com/ageitgey/face_recognition)
-* [Hugging Face Hub](https://huggingface.co/arnabdhar/YOLOv8-Face-Detection)
+🙏 致謝
+ • ultralytics/ultralytics – YOLOv8
+ • deepinsight/InsightFace
+ • ageitgey/face_recognition
+ • Hugging Face Hub
 
----
+⸻
 
-## 🔗 相關連結
+🔗 相關連結
+ • YOLOv8-Face 權重
+https://huggingface.co/arnabdhar/YOLOv8-Face-Detection
+ • InsightFace 官方
+https://github.com/deepinsight/insightface
+ • ArcFace 論文
+https://arxiv.org/abs/1801.07698
 
-* YOLOv8-Face 模型權重：[https://huggingface.co/arnabdhar/YOLOv8-Face-Detection](https://huggingface.co/arnabdhar/YOLOv8-Face-Detection)
-* InsightFace 官方：[https://github.com/deepinsight/insightface](https://github.com/deepinsight/insightface)
-* 臉部辨識參考資料：[https://github.com/ageitgey/face\_recognition](https://github.com/ageitgey/face_recognition)
+⸻
 
----
-
-## ⚠️ 注意事項
-
-* YOLOv8 模型下載可能需等幾秒
-* `face_db.py` 預設會遍檢所有 `faces_db` 子資料夾
-* 每位人物建議提供至少3張清晰照片（正臉）
-* 若無 `face_db.pkl` 檔案，`recognizer.py` 僅會標記為 Unknown
-* 請避免輸入解析度過大的影片，避免記憶體不足
-# YOLO_Face_Match
+⚠️ 注意事項
+ • 第一次執行會自動下載 YOLO 權重 需網路
+ • 建議每位人物至少三張正臉照片提升辨識度
+ • 若缺少 face_db.pkl 系統將全部標記為 Unknown
+ • 請避免超高解析度影片 以免記憶體不足
